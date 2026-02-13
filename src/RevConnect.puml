@@ -1,0 +1,161 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' =================== MODEL LAYER ===================
+
+class User {
+  - userId : int
+  - name : String
+  - email : String
+  - password : String
+  - role : String
+  - bio : String
+  - location : String
+
+  + getters/setters()
+}
+
+class Post {
+  - postId : int
+  - userId : int
+  - content : String
+
+  + getters/setters()
+}
+
+class Comment {
+  - commentId : int
+  - postId : int
+  - userId : int
+  - commentText : String
+
+  + getters/setters()
+}
+
+class Notification {
+  - notificationId : int
+  - userId : int
+  - message : String
+  - isRead : boolean
+
+  + getters/setters()
+}
+
+class Like {
+  - likeId : int
+  - postId : int
+  - userId : int
+
+  + getters/setters()
+}
+
+' =================== DAO LAYER ===================
+
+class UserDAO {
+  + register(User u)
+  + login(email, pass) : User
+  + updateProfile(id, bio, loc)
+  + getUserById(id) : User
+  + searchByName(name) : List<User>
+  + getAllUsers() : List<User>
+}
+
+class PostDAO {
+  + createPost(Post p)
+  + getAllPosts() : List<Post>
+  + editPost(id, userId, content) : boolean
+  + deletePost(id, userId) : boolean
+  + isPostExist(id) : boolean
+  + getPostsByUser(userId) : List<Post>
+}
+
+class CommentDAO {
+  + addComment(Comment c)
+  + getCommentsByPost(id) : List<Comment>
+  + deleteComment(cid, userId) : boolean
+}
+
+class LikeDAO {
+  + likePost(pid, uid)
+  + unlikePost(pid, uid)
+  + getLikeCount(pid) : int
+}
+
+class NotificationDAO {
+  + addNotification(uid, msg)
+  + getNotifications(uid) : List<Notification>
+}
+
+' =================== SERVICE LAYER ===================
+
+class UserService {
+  + register(User u)
+  + login(e,p) : User
+  + updateProfile()
+  + getUserById()
+  + searchByName()
+  + getAllUsers()
+}
+
+class PostService {
+  + createPost()
+  + getAllPosts()
+  + editPost()
+  + deletePost()
+  + isPostExist()
+  + getPostsByUser()
+}
+
+class CommentService {
+  + addComment()
+  + getCommentsByPost()
+  + deleteComment()
+}
+
+class LikeService {
+  + likePost()
+  + unlikePost()
+  + getLikeCount()
+}
+
+class NotificationService {
+  + addNotification()
+  + getNotifications()
+}
+
+' =================== UI LAYER ===================
+
+class Menu {
+  + start()
+  - postMenu(User)
+  - readInt()
+}
+
+class BusinessMenu {
+  + show(User)
+}
+
+' =================== RELATIONSHIPS ===================
+
+User "1" -- "*" Post
+User "1" -- "*" Comment
+Post "1" -- "*" Comment
+Post "1" -- "*" Like
+User "1" -- "*" Like
+User "1" -- "*" Notification
+
+Menu --> UserService
+Menu --> PostService
+Menu --> LikeService
+Menu --> CommentService
+Menu --> NotificationService
+
+BusinessMenu --> PostService
+
+UserService --> UserDAO
+PostService --> PostDAO
+CommentService --> CommentDAO
+LikeService --> LikeDAO
+NotificationService --> NotificationDAO
+
+@enduml
